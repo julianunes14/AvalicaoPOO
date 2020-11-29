@@ -27,6 +27,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <%@include file="WEB-INF/componentes/menu.jspf" %>
         <h1>Materias</h1>
         <table border ="1">
             <tr>

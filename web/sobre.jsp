@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <%@include file="WEB-INF/componentes/menu.jspf" %>
         <h1>Avaliacao POO</h1>
         <h2>Julia Gabrielle Luciano Nunes</h2>
         <h3>RA: 1290481912044</h3>
