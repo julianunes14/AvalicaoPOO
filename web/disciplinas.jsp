@@ -1,71 +1,92 @@
-<%-- 
-    Document   : disciplina
-    Created on : 03/10/2020, 23:30:51
-    Author     : Júlia Nunes
---%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="classes.Disciplina" %>
+<%@page import="fatec.Disciplina" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%
-    ArrayList<Disciplina>minhasDisciplinas= Disciplina.getList((ArrayList)application.getAttribute("disciplinaList"));
-     if(request.getParameter("alterar")!=null){
-        int i = Integer.parseInt(request.getParameter("i"));
-        Double nota = Double.parseDouble(request.getParameter("nota"));
-        if(nota>=0 && nota<=10){
-            minhasDisciplinas.get(i).setNota(nota);
-            response.sendRedirect(request.getRequestURI());
-        }
-        else{
-            out.print("<script>alert('Mensagem de retorno');</script>");
-        }
-     }
-%>    
 <!DOCTYPE html>
 <html>
     <head>
+           <style>
+    body {
+    background-color: #93B874;
+    }
+    h1 {
+    background-color: #00b33c;
+    }
+</style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Disciplinas</title>
     </head>
     <body>
         <%@include file="WEB-INF/componentes/menu.jspf" %>
-        <h1>Materias</h1>
-        <table border ="1">
+        <%
+            Exception err = null;
+            
+            try{               
+                if(request.getParameter("nt") != null){
+                    Disciplina.update(
+                            Integer.parseInt(request.getParameter("nota")),
+                            Integer.parseInt(request.getParameter("id"))
+                            
+                    );
+                    response.sendRedirect(request.getRequestURI());
+                }
+                
+                if(request.getParameter("cria") != null){
+                    Disciplina.insert(
+                            request.getParameter("nome"),
+                            request.getParameter("ementa"),
+                            Integer.parseInt(request.getParameter("ciclo"))
+                            
+                    );
+                    response.sendRedirect(request.getRequestURI());
+                }
+                
+                if(request.getParameter("excluir") != null){
+                    Disciplina.delete(
+                            Integer.parseInt(request.getParameter("id"))
+                    );
+                    response.sendRedirect(request.getRequestURI());
+                }
+                
+            }catch(Exception ex){ 
+                err = ex;
+            }
+            
+        %>
+        <form>
+            <input type="text" placeholder="Disciplina" name="nome">
+            <input type="text" placeholder="Ementa" name="ementa">
+            <input type="number" placeholder="Ciclo" name="ciclo">
+            <input type="submit" name="cria" value="Criar">
+        </form>
+        <table border="1">
             <tr>
                 <th>Nome</th>
                 <th>Ementa</th>
                 <th>Ciclo</th>
-                <th>Nota Atual</th>
-                <th>Alterar Nota</th>
-         
-            
-            <%for(int i =0; i<minhasDisciplinas.size();i++){%>
-                <%Disciplina u = minhasDisciplinas.get(i);%>
-                <td><%= u.getNome()%></td>
-                <td><%= u.getEmenta()%></td>
-                <td><%= u.getCiclo()%></td>
-                <td><%= u.getNota()%></td>
-                <td>
-                    <form>
-                        
-                        <input type="hidden" name="i" value="<%=i%>" />
-                        <input type ="text" name="nota" />     
-                        <input type ="submit" name="alterar" value="Alterar" />  
-                        
-                        
-                        
-                    </form>
-                   
-                </td>
-            
-        </tr>
-            
-        <%}%>  
-            
-            
-            
-            
-            
-            
+                <th>Nota</th>
+                <th>Editar Nota</th>
+                <th>Ação</th>
+            </tr>
+            <% for(Disciplina disciplina : Disciplina.getList()){ %>
+                <tr>
+                    <td><%=disciplina.getNome()%></td>
+                    <td><%=disciplina.getEmenta()%></td>
+                    <td><%=disciplina.getCiclo()%></td>
+                    <td><%=disciplina.getNota()%></td>
+                    <td>
+                        <form>
+                            <input type="hidden" name="id" value="<%=disciplina.getId()%>">
+                            <input type="number" name="nota" required>
+                            <input type="submit" name="nt" value="Alterar">
+                        </form> 
+                    </td>
+                    <td>
+                        <form>
+                            <input type="hidden" name="id" value="<%=disciplina.getId()%>">
+                            <input type="submit" name="excluir" value="Excluir">
+                        </form> 
+                    </td>
+                </tr>
+            <% } %>
         </table>
     </body>
 </html>

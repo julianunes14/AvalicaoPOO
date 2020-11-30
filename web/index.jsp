@@ -1,45 +1,92 @@
-<%-- 
-    Document   : index
-    Created on : 03/10/2020, 23:31:51
-    Author     : Júlia Nunes
---%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="classes.Disciplina" %>
+<%@page import="fatec.Disciplina" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%
-    ArrayList<Disciplina> disciplinaList = (ArrayList)application.getAttribute("disciplinaList");
-    if(disciplinaList == null){
-        disciplinaList = new ArrayList<>();
-        
-        disciplinaList.add(new Disciplina("Banco de dados","Conceitos de Base de Dados. Modelos conceituais de informações. ", "4"));
-        disciplinaList.add(new Disciplina("Engenharia de Software III","Conceitos, evolução e importância de arquitetura de software. ", "4"));
-        disciplinaList.add(new Disciplina("Programacao Orientada a Objetos","Conceitos e evolução da tecnologia de orientação a objetos. ", "4"));
-        disciplinaList.add(new Disciplina("Linguagem de Programacao IV","Comandos de linguagens usadas na construção e estruturação de sites para a Web, com páginas dinâmi­cas e interativas.", "4"));disciplinaList.add(new Disciplina("Banco de dados","Conceitos de Base de Dados. Modelos conceituais de informações. ", "4"));
-        disciplinaList.add(new Disciplina("Sistemas Operacionais II","Apresentação de um sistema operacional específico utilizado em ambiente corporativo. ", "4"));
-        disciplinaList.add(new Disciplina("Ingles IV","Consolidação da compreensão e produção oral e escrita por meio da integração das habilidades lingüístico-comunicativas desenvolvidas na disciplina Inglês 3. ", "4"));
-        disciplinaList.add(new Disciplina("Metodologia da Pesquica Cientifico -Tecnologica","O Papel da ciência e da tecnologia. Tipos de conhecimento. Método e técnica. ", "4"));
-        
-        application.setAttribute("disciplinaList", disciplinaList);
-    }
-
-
-
-    %>
 <!DOCTYPE html>
 <html>
     <head>
+           <style>
+    body {
+    background-color: #93B874;
+    }
+    h1 {
+    background-color: #00b33c;
+    }
+</style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Disciplinas</title>
     </head>
     <body>
         <%@include file="WEB-INF/componentes/menu.jspf" %>
-        <h1>Avaliacao POO</h1>
-        <h2>Julia Gabrielle Luciano Nunes</h2>
-        <h3>RA: 1290481912044</h3>
-        <h3>
+        <%
+            Exception err = null;
             
-            Total de Disciplinas: <%= Disciplina.getList(disciplinaList).size()%>
+            try{               
+                if(request.getParameter("nt") != null){
+                    Disciplina.update(
+                            Integer.parseInt(request.getParameter("nota")),
+                            Integer.parseInt(request.getParameter("id"))
+                            
+                    );
+                    response.sendRedirect(request.getRequestURI());
+                }
+                
+                if(request.getParameter("cria") != null){
+                    Disciplina.insert(
+                            request.getParameter("nome"),
+                            request.getParameter("ementa"),
+                            Integer.parseInt(request.getParameter("ciclo"))
+                            
+                    );
+                    response.sendRedirect(request.getRequestURI());
+                }
+                
+                if(request.getParameter("excluir") != null){
+                    Disciplina.delete(
+                            Integer.parseInt(request.getParameter("id"))
+                    );
+                    response.sendRedirect(request.getRequestURI());
+                }
+                
+            }catch(Exception ex){ 
+                err = ex;
+            }
             
-        </h3>
+        %>
+        <form>
+            <input type="text" placeholder="Disciplina" name="nome">
+            <input type="text" placeholder="Ementa" name="ementa">
+            <input type="number" placeholder="Ciclo" name="ciclo">
+            <input type="submit" name="cria" value="Criar">
+        </form>
+        <table border="1">
+            <tr>
+                <th>Nome</th>
+                <th>Ementa</th>
+                <th>Ciclo</th>
+                <th>Nota</th>
+                <th>Editar Nota</th>
+                <th>Ação</th>
+            </tr>
+            <% for(Disciplina disciplina : Disciplina.getList()){ %>
+                <tr>
+                    <td><%=disciplina.getNome()%></td>
+                    <td><%=disciplina.getEmenta()%></td>
+                    <td><%=disciplina.getCiclo()%></td>
+                    <td><%=disciplina.getNota()%></td>
+                    <td>
+                        <form>
+                            <input type="hidden" name="id" value="<%=disciplina.getId()%>">
+                            <input type="number" name="nota" required>
+                            <input type="submit" name="nt" value="Alterar">
+                        </form> 
+                    </td>
+                    <td>
+                        <form>
+                            <input type="hidden" name="id" value="<%=disciplina.getId()%>">
+                            <input type="submit" name="excluir" value="Excluir">
+                        </form> 
+                    </td>
+                </tr>
+            <% } %>
+        </table>
     </body>
 </html>
