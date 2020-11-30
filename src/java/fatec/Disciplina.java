@@ -1,12 +1,12 @@
 package fatec;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import db.Listener;
-import java.sql.PreparedStatement;
 
 public class Disciplina {
     private int id;
@@ -30,8 +30,8 @@ public class Disciplina {
     public static ArrayList<Disciplina> getList() throws Exception{
         ArrayList<Disciplina> list = new ArrayList<>();
         
-        Connection con = null;
-        Statement stmt = null;
+        Connection con = null; 
+        Statement stmt = null; 
         ResultSet rs = null;
         
         Exception methodException = null;
@@ -51,22 +51,23 @@ public class Disciplina {
                 ));
             }
             
-        }catch(Exception ex){
+        } catch(Exception ex){
             methodException = ex;
-        }finally{
-            try{rs.close();}catch(Exception ex){}
-            try{stmt.close();}catch(Exception ex){}
-            try{con.close();}catch(Exception ex){}
+            
+        } finally {
+            try{ rs.close(); } catch( Exception ex2 ){}
+            try{ stmt.close(); } catch( Exception ex2 ){}
+            try{ con.close(); } catch( Exception ex2 ){}
         }
         
-        if(methodException != null) throw methodException;
+        if( methodException != null ) throw methodException;
         
         return list;
     }
     
     public static void insert(String nome, String ementa, int ciclo) throws Exception{
-        Connection con = null;
-        PreparedStatement stmt = null;
+        Connection con = null; 
+        PreparedStatement stmt = null; 
         ResultSet rs = null;
         
         Exception methodException = null;
@@ -80,20 +81,21 @@ public class Disciplina {
             stmt.setInt(3, ciclo);
             
             stmt.execute();
+            
         }catch(Exception ex){
             methodException = ex;
         }finally{
-            try{rs.close();}catch(Exception ex){}
-            try{stmt.close();}catch(Exception ex){}
-            try{con.close();}catch(Exception ex){}
+            try{rs.close();}catch(Exception ex2){}
+            try{stmt.close();}catch(Exception ex2){}
+            try{con.close();}catch(Exception ex2){}
         }
         
-        if(methodException != null) throw methodException;
+        if(methodException!=null) throw methodException;
     }
     
     public static void update(int nota, int id) throws Exception{
-        Connection con = null;
-        PreparedStatement stmt = null;
+        Connection con = null; 
+        PreparedStatement stmt = null; 
         ResultSet rs = null;
         
         Exception methodException = null;
@@ -106,20 +108,21 @@ public class Disciplina {
             stmt.setInt(2, id);
             
             stmt.execute();
+            
         }catch(Exception ex){
             methodException = ex;
         }finally{
-            try{rs.close();}catch(Exception ex){}
-            try{stmt.close();}catch(Exception ex){}
-            try{con.close();}catch(Exception ex){}
+            try{rs.close();}catch(Exception ex2){}
+            try{stmt.close();}catch(Exception ex2){}
+            try{con.close();}catch(Exception ex2){}
         }
         
-        if(methodException != null) throw methodException;
+        if(methodException!=null) throw methodException;
     }
     
     public static void delete(int id) throws Exception{
-        Connection con = null;
-        PreparedStatement stmt = null;
+        Connection con = null; 
+        PreparedStatement stmt = null; 
         ResultSet rs = null;
         
         Exception methodException = null;
@@ -127,26 +130,25 @@ public class Disciplina {
         try{
             con = Listener.getConnection();
             stmt = con.prepareStatement("DELETE FROM disciplinas WHERE id=?");
-            
             stmt.setInt(1, id);
             
             stmt.execute();
         }catch(Exception ex){
             methodException = ex;
         }finally{
-            try{rs.close();}catch(Exception ex){}
-            try{stmt.close();}catch(Exception ex){}
-            try{con.close();}catch(Exception ex){}
+            try{rs.close();}catch(Exception ex2){}
+            try{stmt.close();}catch(Exception ex2){}
+            try{con.close();}catch(Exception ex2){}
         }
         
-        if(methodException != null) throw methodException;
+        if(methodException!=null) throw methodException;
     }
     
     public static int total() throws Exception{
         int total = 0;
         
-        Connection con = null;
-        Statement stmt = null;
+        Connection con = null; 
+        Statement stmt = null;  
         ResultSet rs = null;
         
         Exception methodException = null;
@@ -154,20 +156,21 @@ public class Disciplina {
         try{
             con = Listener.getConnection();
             stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT COUNT(*) FROM disciplinas");
+            rs = stmt.executeQuery("SELECT * FROM disciplinas");
             
             while(rs.next()){
                 total = rs.getInt(1);
             }
+            
         }catch(Exception ex){
             methodException = ex;
         }finally{
-            try{rs.close();}catch(Exception ex){}
-            try{stmt.close();}catch(Exception ex){}
-            try{con.close();}catch(Exception ex){}
+            try{rs.close();}catch(Exception ex2){}
+            try{stmt.close();}catch(Exception ex2){}
+            try{con.close();}catch(Exception ex2){}
         }
         
-        if(methodException != null) throw methodException;
+        if(methodException!=null) throw methodException;
         
         return total;
     }
@@ -192,14 +195,18 @@ public class Disciplina {
         return this.nota;
     }
     
+    public void setNota(int nota){
+        this.nota = nota;
+    }
+    
     public static String getCreateStatement(){
         return "CREATE TABLE IF NOT EXISTS disciplinas("
-                    +"id INTEGER PRIMARY KEY,"
-                    +"nome VARCHAR(100) NOT NULL,"
-                    +"ementa VARCHAR(200) NOT NULL,"
-                    +"ciclo INTEGER NOT NULL,"
-                    +"nota INTEGER DEFAULT 0"
-                +")";
+                    + "id INTEGER PRIMARY KEY,"
+                    + "nome VARCHAR(50) NOT NULL,"
+                    + "ementa VARCHAR(200) NOT NULL,"
+                    + "ciclo INTEGER NOT NULL,"
+                    + "nota INTEGER DEFAULT 0"
+                + ")";
     }
     
 }
